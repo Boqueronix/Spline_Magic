@@ -11,13 +11,7 @@ import java.awt.MediaTracker;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
@@ -461,7 +455,7 @@ import javax.swing.KeyStroke;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public final class StdDraw implements ActionListener, MouseListener, MouseMotionListener, KeyListener {
+public final class StdDraw implements ActionListener, MouseListener, MouseMotionListener, KeyListener, WindowListener {
 
     /**
      *  The color black.
@@ -606,7 +600,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
     private static StdDraw std = new StdDraw();
 
     // the frame for drawing to the screen
-    private static JFrame frame;
+    public static JFrame frame;
 
     // mouse state
     private static boolean isMousePressed = false;
@@ -670,14 +664,14 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
     }
 
     // init
-    private static void init() {
+    public static void init() {
         // JFrame stuff
         if (frame == null) {
             frame = new JFrame();
             frame.addKeyListener(std);    // JLabel cannot get keyboard focus
             frame.setFocusTraversalKeysEnabled(false);  // allow VK_TAB with isKeyPressed()
             frame.setResizable(false);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);            // closes all windows
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);            // closes all windows
             // frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);      // closes only current window
             frame.setTitle(windowTitle);
             frame.setJMenuBar(createMenuBar());
@@ -1481,6 +1475,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
      * @throws IllegalArgumentException if the image filename is invalid
      * @throws IllegalArgumentException if either {@code x} or {@code y} is either NaN or infinite
      */
+
+
     public static void picture(double x, double y, String filename) {
         validate(x, "x");
         validate(y, "y");
@@ -1918,6 +1914,11 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
             mouseY = StdDraw.userY(e.getY());
             isMousePressed = true;
         }
+        try {
+            Main.mousePressed(e);
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     /**
@@ -2038,6 +2039,41 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
         synchronized (KEY_LOCK) {
             keysDown.remove(e.getKeyCode());
         }
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        System.out.println("NO");
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+
     }
 
 
