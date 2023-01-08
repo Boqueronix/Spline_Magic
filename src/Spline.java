@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Spline {
     private ArrayList<Curve> curves = new ArrayList<>(0);
@@ -13,7 +14,7 @@ public class Spline {
     public void addCurve() {
         System.out.println(type);
         switch (type) {
-            case BEZIER:
+            case BEZIER, CATMULL_ROM:
                 ArrayList<Point> pointsE = new ArrayList<>(0);
                 pointsE.add(new Point(0.25, 0.25));
                 pointsE.add(new Point(0.25, 0.75));
@@ -21,20 +22,13 @@ public class Spline {
                 pointsE.add(new Point(0.75, 0.25));
                 curves.add(new Curve(this, pointsE));
                 break;
-            case HERMITE:
+            case HERMITE, B_SPLINE:
                 ArrayList<Point> pointsH = new ArrayList<>(0);
-                pointsH.add(new Point(0.5, 0.5));
+                pointsH.add(new Point(0.25, 0.5));
+                pointsH.add(new Point(0.25, 0.75));
+                pointsH.add(new Point(0.75, 0.5));
+                pointsH.add(new Point(0.75, 0.25));
                 curves.add(new Curve(this, pointsH));
-                break;
-            case CATMULL_ROM:
-                ArrayList<Point> pointsC = new ArrayList<>(0);
-                pointsC.add(new Point(0.5, 0.5));
-                curves.add(new Curve(this, pointsC));
-                break;
-            case B_SPLINE:
-                ArrayList<Point> pointsB = new ArrayList<>(0);
-                pointsB.add(new Point(0.5, 0.5));
-                curves.add(new Curve(this, pointsB));
                 break;
             default:
                 ArrayList<Point> pointsL = new ArrayList<>(0);
@@ -58,14 +52,18 @@ public class Spline {
         }
         if (tooClose) {
             curves.get(indexI).points.remove(indexJ);
+        } else if (x < 0.2 && y > 0.9 && type == TYPE.CATMULL_ROM){
+            Scanner scalarListener = new Scanner(System.in);
+            double scalar = 2;
+            while (!(scalar >= 0 && scalar <= 1)){
+                System.out.println("Enter a new value");
+                scalar = scalarListener.nextDouble();
+            }
+            Main.scalar = scalar;
+            System.out.println("out");
         } else {
             switch (type) {
-                case BEZIER:
-                case HERMITE:
-                case CATMULL_ROM:
-                case B_SPLINE:
-                default:
-                    curves.get(0).points.add(new Point(x, y));
+                case BEZIER, HERMITE, CATMULL_ROM, B_SPLINE, default -> curves.get(0).points.add(new Point(x, y));
             }
         }
     }

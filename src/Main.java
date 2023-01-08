@@ -1,18 +1,19 @@
 import javax.swing.*;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
 
 public class Main {
     private static boolean choosing;
     private static TYPE type;
     public static Spline active;
-    public static boolean mousePressed = false;
-    public static boolean started = false;
+    public static double scalar = 0.5;
+    private static boolean mousePressed = false;
+    private static boolean started = false;
     public static void main(String[] args) throws InterruptedException {
         start();
         while (choosing){Thread.sleep(1);}
         active = new Spline(type);
         StdDraw.init();
+        StdDraw.enableDoubleBuffering();
         Screen.init();
         StdDraw.pause(1000);
         //buttons and choices
